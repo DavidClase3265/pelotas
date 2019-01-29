@@ -12,6 +12,8 @@ public class Pelota {
 	private int diametro;
 	private Dimension dim;
 	private Color color;
+	private int xmax;
+	private int ymax;
 	
 	public Pelota(Color color, int radio, double x, double y, double d, double v, Dimension dim) {
 		this.color = color;
@@ -28,12 +30,33 @@ public class Pelota {
 		double dy = t * vy / 1000000000d;
 		x += dx;
 		y += dy;
-		if (x <= 100 || x + diametro+100 >= dim.width)   //cada x es para izq y pa abajo y la y pa derech ay arriba creo y eso es para el margen donde rebotan las pelotas
+		if (x < 0) {//cada x es para izq y pa abajo y la y pa derech ay arriba creo y eso es para el margen donde rebotan las pelotas, para que en el siguiente frame no se muestre que se sale, que rebote
+			x = Math.abs(dx) -x;
 			vx *= -1;
-		else if (y <= 100 || y + diametro  + 100 >= dim.height)
-			vy *= -1;
+		}
+		
+		else if (x + diametro > dim.width) {
+			xmax = dim.width -1;
+			x = xmax - diametro - (dx -(x + diametro - xmax));
+			vx *= -1;
+		}
+			
+	
+	
+	//hay que repetir todo pero para y
+	if (y < 0) {
+		y = Math.abs(dy) -y;
+		vy *= -1;
 	}
 	
+	else if (y + diametro > dim.height) {
+		ymax = dim.height -1;
+		y = ymax - diametro - (dy -(y + diametro - ymax));
+		vy *= -1;
+	}
+		
+}
+					
 	public void paint(Graphics g) {
 		g.setColor(color);
 		g.fillOval((int) x, (int) y, diametro, diametro);
